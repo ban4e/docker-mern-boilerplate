@@ -1,0 +1,86 @@
+@import '../variables.css';
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+ul[class] {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+input,
+button,
+textarea,
+select,
+label {
+    font: inherit;
+}
+
+select,
+textarea,
+input {
+    width: 100%;
+}
+
+html, body {
+    font-size: $font-size;
+    line-height: normal;
+}
+
+html {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+    font-family: $font-main;
+    font-size: $root-font-size;
+}
+
+@media (pointer: fine) { /* scrollbar issue */
+    html {
+        margin-left: calc(100vw - 100%);
+        margin-right: 0;
+    }
+}
+
+body {
+    min-height: 100vh;
+    background-color: $deep-blue;
+    color: $white;
+    scroll-behavior: smooth;
+    text-rendering: optimizeSpeed;
+    font-size: $root-font-size;
+    overflow-x: hidden;
+}

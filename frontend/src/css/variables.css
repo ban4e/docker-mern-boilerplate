@@ -1,0 +1,16 @@
+/* palette */
+$deep-blue-900: #0B0033;
+$deep-blue-800: #160066;
+$deep-blue-700: #210099;
+$deep-blue-600: #2c00cc;
+$deep-blue-500: #3700ff;
+$deep-blue: $deep-blue-900;
+
+$white: #FFFFFF;
+
+/* font */
+$font-fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$font-muller: 'Muller';
+$font-main: $font-muller, $font-fallback;
+$root-font-size: 10px;
+$font-size: 24px;
