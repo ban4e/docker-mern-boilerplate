@@ -40,6 +40,10 @@ img {
     display: block;
 }
 
+svg {
+    display: inline-flex;
+}
+
 input,
 button,
 textarea,
@@ -54,11 +58,6 @@ input {
     width: 100%;
 }
 
-html, body {
-    font-size: $font-size;
-    line-height: normal;
-}
-
 html {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -66,6 +65,11 @@ html {
     font-feature-settings: 'liga';
     font-family: $font-main;
     font-size: $root-font-size;
+}
+
+html, body {
+    @mixin rhythm $font-size;
+    line-height: normal;
 }
 
 @media (pointer: fine) { /* scrollbar issue */
@@ -77,10 +81,9 @@ html {
 
 body {
     min-height: 100vh;
-    background-color: $deep-blue;
+    background-color: #000000;
     color: $white;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
-    font-size: $root-font-size;
     overflow-x: hidden;
 }

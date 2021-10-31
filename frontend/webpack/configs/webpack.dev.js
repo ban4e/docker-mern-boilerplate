@@ -18,6 +18,7 @@ module.exports = () => {
             devtool: 'cheap-module-source-map', // cheap-module-source-map
             target: 'web', // ОКРУЖЕНИЕ, ПОД КОТОРОЕ РАБОТАЕТ СБОРКА
             devServer: {
+                noInfo: true,
                 contentBase: BUILD_DIRECTORY,
                 watchContentBase: true,
                 host: HOST,
@@ -32,6 +33,9 @@ module.exports = () => {
                 watchOptions: {
                     aggregateTimeout: 500, // delay before reloading
                     poll: 1000 // enable polling since fsevents are not supported in docker
+                },
+                stats: {
+                    colors: true
                 }
                 // compress: true,
                 // publicPath: '/',
@@ -45,6 +49,14 @@ module.exports = () => {
             output: {
                 filename: '[name].js',
                 publicPath: '/' // УКАЗАНИЕ PUBLIC URL ДЛЯ DEV-РЕЖИМА (НЕОБХОДИМО ДЛЯ ПРАВИЛЬНОГО ПОСТРОЕНИЯ ПУТИ АССЕТОВ)
+            },
+            stats: {
+                assets: false,
+                moduleAssets: false,
+                cachedModules: false,
+                runtimeModules: false,
+                entrypoints: false,
+                colors: true
             }
         },
         styles.loadDevStyles(),

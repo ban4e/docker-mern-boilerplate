@@ -1,4 +1,5 @@
 // Core
+const path = require('path');
 const { merge } = require('webpack-merge');
 
 // Constants
@@ -11,7 +12,7 @@ module.exports = () => {
     return merge(
         {
             // ТОЧКА ВХОДА
-            entry: SOURCE_DIRECTORY,
+            entry: path.join(SOURCE_DIRECTORY, './index.tsx'),
             output: {
                 path: BUILD_DIRECTORY, // ПУТЬ ДО ДИРЕКТОРИИ OUTPUT. УКАЗЫВАЕТСЯ АБСОЛЮТНЫЙ ПУТЬ
                 publicPath: '/'

@@ -4,18 +4,43 @@ module.exports = {
         es2021: true,
         node: true
     },
-    extends: ['plugin:react/recommended', 'standard', 'prettier'],
-    parserOptions: {
-        ecmaFeatures: {
-            jsx: true
-        },
-        ecmaVersion: 12,
-        sourceType: 'module'
+    extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended'],
+    parser: '@typescript-eslint/parser',
+    globals: {
+        JSX: true,
+        __WebpackModuleApi: true
     },
-    plugins: ['react', 'prettier'],
+    overrides: [
+        {
+            files: ['*.ts', '*.tsx'],
+            parserOptions: {
+                ecmaVersion: 12,
+                sourceType: 'module',
+                project: ['./tsconfig.json'],
+                tsconfigRootDir: __dirname,
+                ecmaFeatures: {
+                    jsx: true
+                }
+            },
+            rules: {
+                'no-extra-parens': 0,
+                'no-unused-vars': 0,
+                '@typescript-eslint/no-unused-vars': 2,
+                '@typescript-eslint/no-extra-parens': [2, 'functions']
+            }
+        },
+        {
+            files: ['./webpack/**/*.js', './tailwind.config.js'],
+            rules: {
+                '@typescript-eslint/no-var-requires': 0
+            }
+        }
+    ],
+    // ignorePatterns: [
+    //     ".eslintrc.js"
+    // ],
+    plugins: ['react', 'react-hooks', '@typescript-eslint'],
     rules: {
-        /* Prettier */
-        'prettier/prettier': ['error', { endOfLine: 'auto' }],
         /* ESLint: possible errors */
         'for-direction': 1,
         'getter-return': [
@@ -151,7 +176,7 @@ module.exports = {
         'no-unused-vars': 1,
         'no-use-before-define': 0,
         'callback-return': 0,
-        indent: ['error', 4],
+        indent: [2, 4, { SwitchCase: 1 }],
 
         /* ESLint: stylistic issues */
         'array-bracket-spacing': [
@@ -171,6 +196,50 @@ module.exports = {
                 objects: 'never',
                 functions: 'never'
             }
-        ]
+        ],
+        semi: [2, 'always', { omitLastInOneLineBlock: true }],
+
+        /** React */
+        'react/prop-types': 0,
+        'react/jsx-uses-react': 0,
+        'react/react-in-jsx-scope': 0,
+        'react/sort-comp': [2, {
+            'order': [
+                'static-methods',
+                'instance-variables',
+                'lifecycle',
+                'everything-else',
+                'render'
+            ],
+            'groups': {
+                'lifecycle': [
+                    'displayName',
+                    'propTypes',
+                    'contextTypes',
+                    'childContextTypes',
+                    'mixins',
+                    'statics',
+                    'defaultProps',
+                    'constructor',
+                    'getDefaultProps',
+                    'state',
+                    'getInitialState',
+                    'getChildContext',
+                    'getDerivedStateFromProps',
+                    'componentWillMount',
+                    'UNSAFE_componentWillMount',
+                    'componentDidMount',
+                    'componentWillReceiveProps',
+                    'UNSAFE_componentWillReceiveProps',
+                    'shouldComponentUpdate',
+                    'componentWillUpdate',
+                    'UNSAFE_componentWillUpdate',
+                    'getSnapshotBeforeUpdate',
+                    'componentDidUpdate',
+                    'componentDidCatch',
+                    'componentWillUnmount'
+                ]
+            }
+        }]
     }
 };

@@ -1,0 +1,91 @@
+.button {
+    @apply relative inline-flex items-center justify-center font-medium cursor-pointer transition-fast outline-none overflow-hidden after:absolute after:block after:-inset-px after:border-4 after:rounded-inherit after:border-blue-400 after:transition-none after:opacity-0 focus-visible:after:opacity-100 focus-visible:after:transition-fast active:after:opacity-0;
+    &__content {
+        @apply relative z-10 transition-fast;
+    }
+}
+.button.is-loading {
+    @apply cursor-wait;
+    animation: loader-background 1s forwards;
+    .button__loader {
+        @apply absolute top-0 left-0 w-full before:absolute before:inset-0 before:h-1 before:right-auto after:absolute after:inset-0 after:h-1 after:right-auto;
+        &::before {
+            background: linear-gradient(-45deg, rgba(255, 255, 255, .3), rgba(37, 99, 235, .1));
+            will-change: left, right;
+            animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+        }
+        &::after {
+            background: linear-gradient(-45deg, rgba(37, 99, 235, .1), rgba(255, 255, 255, .2), rgba(37, 99, 235, .1));
+            will-change: left, right;
+            animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+            animation-delay: 1.15s;
+        }
+    }
+    .button__content {
+        @apply scale-95 origin-center;
+    }
+}
+.button-pulse {
+    @apply absolute inset-0 overflow-hidden rounded-inherit pointer-events-none;
+    &__effect {
+        @apply absolute bg-white bg-opacity-40 rounded-full origin-center after:block after:pt-[100%];
+        will-change: transform;
+    }
+}
+.button-pulse.enter {
+    .button-pulse__effect {
+        @apply opacity-100 scale-[.25];
+    }
+}
+.button-pulse.enter-active {
+    .button-pulse__effect {
+        @apply opacity-0 scale-[2];
+        transition: opacity .6s, transform .6s;
+    }
+}
+
+.button_theme_primary {
+    @apply text-white bg-blue-600 hover:shadow-lg;
+}
+
+.button_size_md {
+    @apply text-lg rounded-3xl py-[18px] px-8;
+}
+
+.button_view_box.button_size_md {
+    @apply p-0 w-16 h-16 rounded-2xl;
+}
+
+@keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+    60% { 
+        left: 100%;
+        right: -90%;
+    }
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}
+
+@keyframes indeterminate-short {
+    0% {
+        left: -200%;
+        right: 100%;
+    }
+    44% {
+        left: 107%;
+        right: -8%;
+    }
+    100% {
+        left: 107%;
+        right: -8%;
+    }
+}
+
+@keyframes loader-background {
+    to { background-color: theme(colors.gray.500); }
+}

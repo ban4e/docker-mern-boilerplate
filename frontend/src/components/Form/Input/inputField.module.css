@@ -1,0 +1,70 @@
+.field {
+    @apply relative;
+    &__container {
+        @apply relative flex items-center pr-8 pl-5 rounded-2xl before:block before:absolute before:inset-0 before:rounded-inherit before:border-0 before:border-blue-400 before:opacity-0 before:transition-fast;
+    }
+    &__entry {
+        @apply relative flex-auto flex items-center;
+    }
+    &__fieldset {
+        @apply absolute inset-0 border-2 border-gray-300 rounded-inherit transition-fast;
+        padding: inherit;
+        transition-property: border;
+    }
+    &__legend {
+        @apply w-0 p-0 -ml-1.5 -mr-1.5 box-content transition-fast;
+        transition-property: width, padding;
+    }
+    &__input {
+        @apply relative block w-full py-6 px-0 border-none rounded-inherit bg-transparent text-white outline-none resize-none z-10;
+        &::-webkit-autofill,
+        &-internal-autofill-selected {
+            background-color: transparent !important;
+            box-shadow: 0 0 0 20px theme('colors.white') inset !important;
+            -webkit-box-shadow: 0 0 0 20px theme('colors.white') inset !important;
+            -webkit-text-fill-color: theme('colors.black');
+            caret-color: theme('colors.black');
+        }
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        &[type='number'] {
+            -moz-appearance: textfield;
+        }
+    }
+    &__label {
+        @apply absolute top-1/2 left-0 max-w-full text-gray-400 transform -translate-y-1/2 truncate pointer-events-none transition-fast;
+        transform-origin: left top;
+    }
+}
+
+.field.is-filled, .field.is-focused {
+    .field__input {
+        @apply pt-7 pb-5;
+    }
+    .field__legend {
+        @apply px-1.5;
+    }
+}
+
+.field.is-focused {
+    .field__container {
+        @apply before:border-2 before:opacity-100;
+    }
+}
+
+.field_light {
+    .field__container {
+        @apply p-0 bg-transparent items-end before:border-none before:opacity-100 before:top-auto before:block before:h-px before:bg-white;
+    }
+    .field__input {
+        @apply pt-8 pb-4 text-white
+    }
+}
+.field_outlined {
+    .field__container {
+        @apply before:hidden;
+    }
+}

@@ -16,13 +16,18 @@ const loadCSS = ({ isDev = false } = { isDev: false }) => ({
     }
 });
 
+// css modules for TS TODO: prod build
+const loadCSSModulesTypes = () => ({
+    loader: '@teamsupercell/typings-for-css-modules-loader'
+});
+
 // css-modules
 const loadCSSModules = ({ isDev = false } = { isDev: false }) => ({
     loader: 'css-loader',
     options: {
         sourceMap: isDev,
         modules: {
-            getLocalIdent: (ctx, localIdentName, localName, options) => {
+            getLocalIdent: (ctx, localIdentName, localName) => {
                 return isDev ? localName : getScopedName(localName, ctx.resourcePath);
             }
         }
@@ -45,7 +50,7 @@ exports.loadDevStyles = () => ({
         rules: [
             {
                 test: /\.module\.css$/,
-                use: ['style-loader', loadCSSModules({ isDev: true }), loadPostCSS({ isDev: true })]
+                use: ['style-loader', loadCSSModulesTypes(), loadCSSModules({ isDev: true }), loadPostCSS({ isDev: true })]
             },
             {
                 test: /^((?!\.module).)*css$/,

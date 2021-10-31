@@ -1,0 +1,65 @@
+.toggle {
+    @apply relative inline-flex items-center cursor-pointer;
+    &__content {
+        @apply flex items-center;
+    }
+    &__input {
+        @apply absolute h-0 w-0 opacity-0;
+        &:checked + .toggle__content {
+            .toggle__mark {
+                @apply shadow-md;
+            }
+            .toggle__mark-figure {
+                @apply text-blue-500 fill-current;
+            }
+            .toggle__mark-icon {
+                stroke-dashoffset: 0;
+            }
+        }
+        &:focus-visible + .toggle__content .toggle__mark-focus {
+            @apply opacity-100;
+        }
+    }
+    &__mark {
+        @apply relative flex items-center justify-center w-5 h-5 rounded-2xl transition-main;
+    }
+    &__mark-figure {
+        @apply absolute text-gray-300 inset-0 stroke-current fill-[transparent] transition-main;
+    }
+    &__mark-icon {
+        @apply absolute left-1 -top-px text-white stroke-current transition-fast z-10;
+        stroke-width: 2.6px;
+        stroke-dasharray: 20;
+        stroke-dashoffset: 20px;
+    }
+    &__mark-focus {
+        @apply absolute -inset-0.5 border-4 border-blue-400 rounded-lg transition-fast opacity-0 z-10;
+    }
+    &__title {
+        @apply text-white ml-3;
+    }
+}
+
+.toggle:hover {
+    .toggle__mark-figure {
+        @apply text-gray-400;
+    }
+}
+
+.toggle_radio {
+    .toggle {
+        &__mark-figure {
+            @apply bg-white rounded-full before:absolute before:inset-0 before:rounded-inherit before:border-blue-500 before:transition-fast;
+        }
+        &__mark-focus {
+            @apply rounded-full;
+        }
+        &__input {
+            &:checked + .toggle__content {
+                .toggle__mark-figure {
+                    @apply before:border-[6px];
+                }
+            }
+        }
+    }
+}

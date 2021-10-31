@@ -15,7 +15,7 @@ module.exports = api => {
     if (isDev) plugins.push('react-refresh/babel');
 
     return {
-        presets: ['@babel/preset-react', '@babel/preset-env'],
+        presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
         plugins
     };
 };
