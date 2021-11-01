@@ -1,8 +1,10 @@
-import React, {  useState, useEffect, useRef, PropsWithChildren, ButtonHTMLAttributes, MouseEvent } from 'react';
+import React, {  useState, useRef, PropsWithChildren, ButtonHTMLAttributes, MouseEvent } from 'react';
 import styles from './Button.module.css';
 import classNames from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useRect from '~/helpers/useRect';
+import useDidMountEffect from '~/helpers/useDidMountEffect';
+import CheckIcon from '~/assets/svg/check.svg';
 
 /* Размеры */
 export enum Sizes {
@@ -26,8 +28,9 @@ interface IButtonVariantProps {
     className?: string | Array<string | Record<string, boolean>> | Record<string, boolean>;
     isPulse?: boolean;
 }
-interface IBaseButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+interface IBaseButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'onClick'> {
     type?: 'button' | 'submit' | 'reset';
+    onClick?: (e: MouseEvent)=> void;
 }
 interface IButtonTagProps {
     tag: 'span' | 'div';
@@ -62,18 +65,21 @@ const Button: React.FC<PropsWithChildren<IButtonProps>> = ({
     onClick,
     ...props
 }) => {
+    const [completed, setCompleted] = useState<boolean>(false); // Выводит галочку после успешной загрузки
+
     /** Классы */
     const themeClass = theme && styles[`button_theme_${ theme }`];
     const sizeClass = size && styles[`button_size_${ size }`];
     const viewClass = view && styles[`button_view_${ view }`];
     const rootClass = classNames(styles.button, themeClass, sizeClass, viewClass, className, {
         'is-loading': loading,
-        'is-disabled': disabled
+        'is-disabled': disabled,
+        'is-completed': completed
     });
 
     /***** LOADING *****/
-    useEffect(() => {
-        console.log(loading);
+    useDidMountEffect(() => {
+        if (!loading) { setCompleted(true) }
     }, [loading]);
     /***** LOADING END *****/
 
@@ -82,7 +88,7 @@ const Button: React.FC<PropsWithChildren<IButtonProps>> = ({
     const buttonRect = useRect(buttonRef);
     const [pulseArr, setPulseArr] = useState<Array<PulseItemType>>([]);
 
-    const handleClick = (e: MouseEvent<HTMLButtonElement>): void => {
+    const handleClick = (e: MouseEvent<HTMLElement>): void => {
         onClick && onClick(e);
 
         if (!isPulse) { return }
@@ -119,11 +125,22 @@ const Button: React.FC<PropsWithChildren<IButtonProps>> = ({
     const buttonTag = tag && 'custom' || 'button';
     const content = (
         <>
-            { loading && <span className="button__loader"></span> }
+            { loading && <span className={styles.button__loader}></span> }
+            <CSSTransition
+                in={completed}
+                timeout={850}
+                className={styles.button__completed}
+                unmountOnExit
+                exit={false}
+                onEntered={() => { setCompleted(false) }}
+                appear
+            >
+                <CheckIcon width="24" height="24" className={styles.button__completed} />
+            </CSSTransition>
             <span className={styles.button__content}>
                 { children }
             </span>
-            { 
+            {
                 isPulse &&
                 <TransitionGroup>
                     {

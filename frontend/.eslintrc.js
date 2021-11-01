@@ -179,6 +179,7 @@ module.exports = {
         indent: [2, 4, { SwitchCase: 1 }],
 
         /* ESLint: stylistic issues */
+        'no-trailing-spaces': 2,
         'array-bracket-spacing': [
             2,
             'never',

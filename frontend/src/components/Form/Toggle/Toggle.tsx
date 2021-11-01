@@ -15,12 +15,12 @@ export interface ToggleProps extends React.PropsWithChildren<Omit<React.InputHTM
 
 
 const Toggle: React.FC<ToggleProps> = ({
-    type = ToggleTypes.checkbox, 
-    className, 
-    children, 
+    type = ToggleTypes.checkbox,
+    className,
+    children,
     ...props
 }) => (
-    <label 
+    <label
         className={classNames(styles.toggle, className, {
             [styles.toggle_radio]: type === ToggleTypes.radio
         })}
@@ -33,7 +33,7 @@ const Toggle: React.FC<ToggleProps> = ({
         <span className={styles.toggle__content}>
             <span className={styles.toggle__mark}>
                 <span className={styles['toggle__mark-focus']} />
-                { 
+                {
                     type === ToggleTypes.checkbox && (
                         <>
                             <CheckIcon className={styles['toggle__mark-icon']} />

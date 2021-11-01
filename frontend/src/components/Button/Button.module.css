@@ -3,6 +3,18 @@
     &__content {
         @apply relative z-10 transition-fast;
     }
+    &__completed {
+        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white stroke-current z-10;
+        stroke-width: 2.6px;
+        stroke-dasharray: 20;
+        &.enter {
+            stroke-dashoffset: 20px;
+        }
+        &.enter-active {
+            stroke-dashoffset: 0;
+            transition: .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+    }
 }
 .button.is-loading {
     @apply cursor-wait;
@@ -25,6 +37,12 @@
         @apply scale-95 origin-center;
     }
 }
+.button.is-completed {
+    .button__content {
+        @apply opacity-0;
+    }
+}
+
 .button-pulse {
     @apply absolute inset-0 overflow-hidden rounded-inherit pointer-events-none;
     &__effect {

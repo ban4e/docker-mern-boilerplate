@@ -60,8 +60,8 @@ function App(): JSX.Element {
                     </div>
                     <div className="col-span-4">
                         <code className="block mb-4">Loading button (by click)</code>
-                        <Button 
-                            loading={isButtonLoading} 
+                        <Button
+                            loading={isButtonLoading}
                             onClick={() => setIsButtonLoading(prevState => !prevState)}
                         >
                             Кнопка

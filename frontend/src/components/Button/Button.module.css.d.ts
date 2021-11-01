@@ -3,6 +3,7 @@ declare namespace ButtonModuleCssNamespace {
     button: string;
     "button-pulse": string;
     "button-pulse__effect": string;
+    button__completed: string;
     button__content: string;
     button__loader: string;
     button_size_md: string;
@@ -12,6 +13,7 @@ declare namespace ButtonModuleCssNamespace {
     "enter-active": string;
     indeterminate: string;
     "indeterminate-short": string;
+    "is-completed": string;
     "is-loading": string;
     "loader-background": string;
   }
