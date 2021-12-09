@@ -20,8 +20,13 @@ export default class LayerManager {
      * @param props Входящие пропсы
      */
     public open(name: string, props?: IModalProps): void {
-        this.layers.forEach(layer => {
+        // Ищем текущее открытое модальное окно, исходя из предположения, что может быть только одно активное окно
+        const lastOpenedLayerIndex = this.layers.findIndex(layer => layer.isOpen);
+        this.layers.forEach((layer, index) => {
             layer.isFront = false;
+            if (lastOpenedLayerIndex > -1 && index === lastOpenedLayerIndex) {
+                layer.invisibleTime = new Date().getTime();
+            }
         });
 
         const openLayerData = { isFront: true, isOpen: true, isClosing: false };
@@ -65,11 +70,30 @@ export default class LayerManager {
 
                 this.layers.splice(layerIndex, 1, {
                     ...this.layers[layerIndex],
-                    isFront: false,
+                    isFront: false, // Истино для того, чтобы корректно работал CSSTransition
                     isOpen: false,
                     isClosing: true,
-                    closeResolver: closeResolver
+                    closeResolver: closeResolver,
+                    invisibleTime: null
                 });
+
+                // Найдем предыдущее открытое окно, если таковое имеется
+                const openedLayers = this.layers.filter(layer => layer.isOpen).sort((a, b) => {
+                    const aInvisibleTime = a.invisibleTime || 1;
+                    const bInvisibleTime = b.invisibleTime || 1;
+
+                    return aInvisibleTime - bInvisibleTime;
+                });
+                const lastOpenedLayer = openedLayers && openedLayers[0];
+                const lastOpenedLayerIndex = lastOpenedLayer && this.layers.findIndex(layer => layer.invisibleTime === lastOpenedLayer.invisibleTime);
+                if (lastOpenedLayerIndex > -1) {
+                    this.layers.splice(lastOpenedLayerIndex, 1, {
+                        ...this.layers[lastOpenedLayerIndex],
+                        isFront: true,
+                        invisibleTime: null
+                    });
+                }
+
                 this.context.setState({ layers: this.layers });
                 // if (!this.checkOpenedLayers()) { this.unlockBody() }
 
@@ -89,7 +113,7 @@ export default class LayerManager {
     /**
      * TODO: private method
      * Переводит модальное окно в закрытое состояние
-     * @param name 
+     * @param name
      */
     public _setClosed(name: string): void {
         const layerIndex = this.findLayerIndexByName(name);
@@ -131,6 +155,14 @@ export default class LayerManager {
         if (this.layers.some(layer => layer.isOpen || layer.isClosing)) { result = true }
 
         return result;
+    }
+
+    /**
+     * Количество открытых модальных окон
+     * @return Number
+     */
+    get openedLayersLength(): number {
+        return this.layers.filter(layer => layer.isOpen || layer.isClosing).length;
     }
 
     /**

@@ -80,6 +80,7 @@
         "webpackbar": "^5.0.0-3"
     },
     "dependencies": {
+        "@headlessui/react": "^1.4.1",
         "classnames": "^2.3.1",
         "inputmask": "^5.0.6",
         "react": "^17.0.1",

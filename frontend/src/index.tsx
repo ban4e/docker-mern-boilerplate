@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Input from '~/components/Form/Input/Input';
 import Toggle from '~/components/Form/Toggle/Toggle';
 import Button from '~/components/Button/Button';
+import Select from '~/components/Form/Select/Select';
 import Layer from './plugins/Layer/Layer';
 import LayerManager from './plugins/Layer/LayerManager';
 import WebpackIcon from '~/assets/svg/webpack.svg';
@@ -14,6 +15,24 @@ const obj = {
         bar: 2
     }
 };
+
+const extensions = [
+    {
+        id: '1',
+        label: 'PNG',
+        value: 'png'
+    },
+    {
+        id: '2',
+        label: 'JPEG',
+        value: 'jpeg'
+    },
+    {
+        id: '3',
+        label: 'WEBP',
+        value: 'webp'
+    }
+];
 
 declare global {
     interface Window {
@@ -69,6 +88,11 @@ function App(): JSX.Element {
                         <Button view="box" loading={isButtonLoading} className="ml-4">
                             <WebpackIcon width="40" />
                         </Button>
+                    </div>
+                    <div className="col-span-4">
+                        <div className="block mb-4">
+                            <Select options={extensions} value={extensions[0]} className="max-w-xs" />
+                        </div>
                     </div>
                     <div className="col-span-4">
                         <code className="block mb-4">Checkbox</code>

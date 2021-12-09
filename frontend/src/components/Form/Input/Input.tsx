@@ -107,7 +107,7 @@ const Input = forwardRef<HTMLInputElement, IInputProps>(({
         >
             <div className={styles.field__container}>
                 {
-                    view === View.outlined && 
+                    view === View.outlined &&
                         <fieldset className={styles.field__fieldset}>
                             { label && <legend className={styles.field__legend} ref={legendRef} style={legendStyle} /> }
                         </fieldset>
@@ -119,7 +119,7 @@ const Input = forwardRef<HTMLInputElement, IInputProps>(({
                                 onFocus: () => setFocused(true),
                                 onBlur: () => setFocused(false)
                             })
-                            : 
+                            :
                             <InputAtomic
                                 className={styles.field__input}
                                 onFocus={() => setFocused(true)}
@@ -130,7 +130,7 @@ const Input = forwardRef<HTMLInputElement, IInputProps>(({
                             />
                     }
                     {
-                        !props.placeholder && label && 
+                        !props.placeholder && label &&
                         <span ref={labelRef} className={styles.field__label} style={labelStyle}>{ label }</span>
                     }
                     {

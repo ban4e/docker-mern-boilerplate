@@ -52,7 +52,9 @@ export interface IModalData {
     /** Модальное окно открыто */
     isOpen: boolean;
     /** Показывать на переднем плане */
-    isFront: boolean;
+    isFront: boolean; // TODO: заменить на isVisible
+    /** Отображает время переход с переднего плана в невидимое. Необходимо для восстановления последовательности */
+    invisibleTime?: number | null;
     /** Модальное окно закрывается. Используется для анимации закрытия. */
     isClosing: boolean;
     /** Контроллер модальных окон */
@@ -110,8 +112,8 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
     }
 
     /**
-     * 
-     * @param e 
+     *
+     * @param e
      */
     _handleKeyDown = (e: KeyboardEvent): void => {
         console.log(e);
@@ -123,9 +125,9 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
     }
 
     /**
-     * 
-     * @param node 
-     * @param event 
+     *
+     * @param node
+     * @param event
      */
     _trapTabKey(node: HTMLElement, event: KeyboardEvent): void {
         const focusableChildren = getFocusableChildren(node);
@@ -143,7 +145,7 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
     }
 
     /**
-     * 
+     *
      * @param ctx Результат require.context()
      * @returns Object { example: ./example.ext, ... }
      */
@@ -166,6 +168,7 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
 
         const cb = context;
         const layersNames = Object.keys(this.layersByName);
+        console.log('render from Layer.tsx');
 
         return (
             <LayerContext.Provider value={{ $layer: this.manager }}>
@@ -173,48 +176,53 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
                 {
                     this.manager.checkOpenedLayers() &&
                     <>
-                        <div className="fixed inset-0 bg-black bg-opacity-70"></div>
+                        <div className="fixed inset-0 bg-black bg-opacity-70 z-[9998]"></div>
                         <div
                             ref={this.layersContainerElem}
-                            className="fixed inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto min-h-screen z-1000"
+                            className="fixed inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto min-h-screen z-[9999]"
                             role="dialog"
-                            onClick={e => {
+                            onMouseDown={e => {
                                 if (e.currentTarget === e.target) { this.manager.close() }
                             }}
                             tabIndex={0}
                         >
                             {
                                 this.state.layers.map(layerData => {
-                                    if (layersNames.includes(layerData.key) && (layerData.isOpen || layerData.isClosing)) {
-                                        const modalComponent = React.createElement<IModalData>(
-                                            cb(this.layersByName[layerData.name]).default,
-                                            {
-                                                key: layerData.name,
-                                                name: layerData.name,
-                                                isOpen: layerData.isOpen,
-                                                isFront: layerData.isFront,
-                                                isClosing: layerData.isClosing,
-                                                $layer: this.manager
-                                            }
-                                        );
+                                    const isShowLayer = layersNames.includes(layerData.key) && (layerData.isOpen || layerData.isClosing);
+                                    if (!isShowLayer) { return null }
 
-                                        return this.transition.name
-                                            ? <CSSTransition
-                                                key={layerData.name}
-                                                appear
-                                                in={layerData.isOpen}
-                                                timeout={this.transition.duration}
-                                                classNames={this.transition.name}
-                                                onExited={() => {
-                                                    /** TODO: maybe resolve via Emitter https://github.com/CodeDraken/emtr/blob/master/emitter.js */
-                                                    layerData.closeResolver && layerData.closeResolver();
-                                                    this.manager._setClosed(layerData.name);
-                                                }}
-                                            >
-                                                {modalComponent}
-                                            </CSSTransition>
-                                            : modalComponent;
-                                    }
+                                    const modalComponent = React.createElement<IModalData>(
+                                        cb(this.layersByName[layerData.name]).default,
+                                        {
+                                            key: layerData.name,
+                                            name: layerData.name,
+                                            isOpen: layerData.isOpen,
+                                            isFront: layerData.isFront,
+                                            isClosing: layerData.isClosing,
+                                            $layer: this.manager
+                                        }
+                                    );
+
+                                    return this.transition.name
+                                        ? <CSSTransition
+                                            key={layerData.name}
+                                            appear
+                                            in={layerData.isOpen && layerData.isFront}
+                                            timeout={this.transition.duration}
+                                            classNames={this.transition.name}
+                                            unmountOnExit
+                                            exit={layerData.isClosing && this.manager.openedLayersLength === 1}
+                                            onExited={() => {
+                                                /** TODO: maybe resolve via Emitter https://github.com/CodeDraken/emtr/blob/master/emitter.js */
+                                                if (!layerData.isClosing) {return}
+                                                layerData.closeResolver && layerData.closeResolver();
+                                                this.manager._setClosed(layerData.name);
+                                            }}
+                                        >
+                                            {modalComponent}
+                                        </CSSTransition>
+                                        : modalComponent;
+
                                 })
                             }
                         </div>
