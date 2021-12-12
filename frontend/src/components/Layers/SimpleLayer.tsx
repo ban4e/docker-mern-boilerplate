@@ -1,7 +1,7 @@
 import React from 'react';
-import { IModalData } from '~/plugins/Layer/Layer';
+import { IModalBaseProps } from '~/plugins/Layer/Layer';
 
-const SimpleLayer: React.FC<IModalData> = props => {
+const SimpleLayer: React.FC<IModalBaseProps> = props => {
     console.log('SimpleLayer render', props);
 
     return (

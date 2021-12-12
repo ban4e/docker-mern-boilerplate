@@ -1,4 +1,4 @@
-import Layer, { ILayerData, IModalProps } from './Layer';
+import Layer, { ILayerData, IModalIncomingProps } from './Layer';
 
 interface ILayerManagerProps {
     layers: ILayerData[];
@@ -19,7 +19,7 @@ export default class LayerManager {
      * @param name Имя модального окна
      * @param props Входящие пропсы
      */
-    public open(name: string, props?: IModalProps): void {
+    public open(name: string, props?: IModalIncomingProps): void {
         // Ищем текущее открытое модальное окно, исходя из предположения, что может быть только одно активное окно
         const lastOpenedLayerIndex = this.layers.findIndex(layer => layer.isOpen);
         this.layers.forEach((layer, index) => {
@@ -156,6 +156,18 @@ export default class LayerManager {
 
         return result;
     }
+
+    /**
+     * Проверяет может ли текущее модальное окно быть закрыто кликом по бэкдропу или через Esc
+     * @return Boolean
+     */
+    public checkVisibleLayerIsClosable(): boolean {
+        let result = true;
+        if (this.layers.find(layer => layer.isFront && layer.isOpen && layer.disallowClose )) { result = false }
+
+        return result;
+    }
+
 
     /**
      * Количество открытых модальных окон

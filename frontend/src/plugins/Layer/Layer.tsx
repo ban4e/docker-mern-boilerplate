@@ -30,13 +30,13 @@ function getFocusableChildren(element: HTMLElement) {
 /**
  * Пропы для открытия модального окна
  */
-export interface IModalProps {
+export interface IModalIncomingProps {
     /** Класс для CSS-transition. Используется библиотека react-transition-group*/
     transitionName?: string; //TODO: не реализовано
     /** Продолжительность для CSS-transition. Используется библиотека react-transition-group*/
     transitionDuration?: number; //TODO: не реализовано
     /** Возможность закрыть окно кликом вне или esc */
-    isClosable?: boolean; //TODO: не реализовано
+    disallowClose?: boolean;
     /** Callback после закрытия окна */
     onAfterClose?: () => void;
 }
@@ -44,7 +44,7 @@ export interface IModalProps {
 /**
  * Пропы, доступные в компоненте модального окна
  */
-export interface IModalData {
+export interface IModalBaseProps {
     /** Ключ */
     key: string;
     /** Название модального окна */
@@ -57,11 +57,14 @@ export interface IModalData {
     invisibleTime?: number | null;
     /** Модальное окно закрывается. Используется для анимации закрытия. */
     isClosing: boolean;
-    /** Контроллер модальных окон */
-    $layer: LayerManager;
+    /** Закрыть модальное окно */
+    close: () => Promise<void>;
+    // /** Контроллер модальных окон */
+    // $layer: LayerManager;
 }
 
-export interface ILayerData extends Omit<IModalData, '$layer'>, IModalProps {
+// Интерфейс для менеджера управления окнами
+export interface ILayerData extends Omit<IModalBaseProps, '$layer' | 'close'>, IModalIncomingProps {
     /** Функция resolve из Promise для подтверждения закрытия окна */
     closeResolver?: (() => void) | null;
 }
@@ -117,7 +120,7 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
      */
     _handleKeyDown = (e: KeyboardEvent): void => {
         console.log(e);
-        if (e.key === 'Escape' && this.manager.checkOpenedLayers()) {
+        if (e.key === 'Escape' && this.manager.checkOpenedLayers() && this.manager.checkVisibleLayerIsClosable()) {
             this.manager.close();
         } else if (e.key === 'Tab' && this.layersContainerElem.current) {
             this._trapTabKey(this.layersContainerElem.current, e);
@@ -182,7 +185,8 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
                             className="fixed inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto min-h-screen z-[9999]"
                             role="dialog"
                             onMouseDown={e => {
-                                if (e.currentTarget === e.target) { this.manager.close() }
+                                e.preventDefault();
+                                if (e.currentTarget === e.target && this.manager.checkVisibleLayerIsClosable()) { this.manager.close() }
                             }}
                             tabIndex={0}
                         >
@@ -191,7 +195,7 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
                                     const isShowLayer = layersNames.includes(layerData.key) && (layerData.isOpen || layerData.isClosing);
                                     if (!isShowLayer) { return null }
 
-                                    const modalComponent = React.createElement<IModalData>(
+                                    const modalComponent = React.createElement<IModalBaseProps>(
                                         cb(this.layersByName[layerData.name]).default,
                                         {
                                             key: layerData.name,
@@ -199,7 +203,8 @@ export default class Layer extends Component<ILayerProps, ILayerState> {
                                             isOpen: layerData.isOpen,
                                             isFront: layerData.isFront,
                                             isClosing: layerData.isClosing,
-                                            $layer: this.manager
+                                            close: this.manager.close.bind(this.manager, layerData.name)
+                                            // $layer: this.manager
                                         }
                                     );
 
